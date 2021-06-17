@@ -189,7 +189,6 @@ VL53LX_Error VL53LX::VL53LX_I2CWrite(int DeviceAddr, uint16_t RegisterAddr, uint
  */
 VL53LX_Error VL53LX::VL53LX_I2CRead(int DeviceAddr, uint16_t RegisterAddr, uint8_t *pBuffer, uint16_t NumByteToRead)
 {
-  uint8_t status;
   uint8_t buffer[2 + NumByteToRead];
   buffer[0] = (uint8_t)(RegisterAddr >> 8);
   buffer[1] = (uint8_t)(RegisterAddr & 0xff);
