@@ -38,7 +38,7 @@ Napi::String initSensor(const Napi::CallbackInfo& info) {
 //	fprintf(stdout, "initSensor\n");
 //	fprintf(stdout, "%s\n", busId);
 
-	std::cout << busId
+	std::cout << busId;
 	
 	// open i2c
 	snprintf(filename, 19, I2C_ADAPTER);
