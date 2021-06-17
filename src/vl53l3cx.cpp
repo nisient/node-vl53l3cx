@@ -19,7 +19,6 @@
 #include "vl53lx_class.h"
 
 #define I2C_ADAPTER "/dev/i2c-3"
-//#define I2C_DEVICE  0x52
 #define I2C_DEVICE  0x29
 
 Napi::String initSensor(const Napi::CallbackInfo& info) {
@@ -27,12 +26,13 @@ Napi::String initSensor(const Napi::CallbackInfo& info) {
 	Napi::Env env = info.Env();
 
 	std::string deviceId = info[0].ToString();
-	std::string busId = info[1].ToString();
+	std::string busId = "/dev/i2c-" + info[1].ToString();
 
 	int fd_i2c;
 	char filename[20];
 
-	fprintf(stdout, "initSensor in c++\n");
+//	fprintf(stdout, "initSensor\n");
+	fprintf(stdout, busId + "\n");
 
 	// open i2c
 	snprintf(filename, 19, I2C_ADAPTER);
