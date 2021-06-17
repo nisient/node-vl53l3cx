@@ -58,8 +58,8 @@ Napi::Boolean initSensor(const Napi::CallbackInfo& info) {
 	return Napi::Boolean::New(env, true);
 
 }
-/*
-void readSensor(VL53LX sensor_vl53lx_sat) {
+
+Napi::Boolean readSensor(VL53LX sensor_vl53lx_sat) {
 
 	int fd_i2c;
 	char filename[20];
@@ -114,9 +114,10 @@ void readSensor(VL53LX sensor_vl53lx_sat) {
 		}
 	} // end while loop
 	
-	return;
+//	return;
+	return Napi::Boolean::New(env, true);
 
-}*/
+}
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
 
@@ -124,10 +125,10 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 		Napi::String::New(env, "initSensor"),
 		Napi::Function::New(env, initSensor)
 	);
-//	exports.Set(
-//		Napi::String::New(env, "readSensor"),
-//		Napi::Function:New(env, readSensor)
-//	);
+	exports.Set(
+		Napi::String::New(env, "readSensor"),
+		Napi::Function:New(env, readSensor)
+	);
 	
 	return exports;
 }
