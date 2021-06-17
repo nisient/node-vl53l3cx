@@ -64,8 +64,6 @@ Napi::Boolean readSensor(const Napi::CallbackInfo& info) {
 
 	Napi::Env env = info.Env();
 
-	VL53LX sensor_vl53lx_sat(fd_i2c);
-
 	int fd_i2c;
 	char filename[20];
 	VL53LX_MultiRangingData_t MultiRangingData;
@@ -86,6 +84,9 @@ Napi::Boolean readSensor(const Napi::CallbackInfo& info) {
 	if (ioctl(fd_i2c, I2C_SLAVE, I2C_DEVICE) < 0) {
 		exit(1);
 	}
+
+	// for now
+	VL53LX sensor_vl53lx_sat(fd_i2c);
 
 	// update i2c fd in constructor
 	sensor_vl53lx_sat.VL53LX_SetDeviceAddress(fd_i2c);
