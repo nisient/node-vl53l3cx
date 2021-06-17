@@ -1,11 +1,12 @@
 #include <napi.h>
 
+#include <string>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 
 #include <errno.h>
-#include <string.h>
 #include <assert.h>
 
 #include <sys/stat.h>
@@ -25,14 +26,15 @@ Napi::String initSensor(const Napi::CallbackInfo& info) {
 
 	Napi::Env env = info.Env();
 
-	std::string deviceId = info[0].ToString();
-	std::string busId = (std::string)"/dev/i2c-" + info[1].ToString();
+	string busPrefix = "/dev/i2c-";
+	string deviceId = info[0].ToString();
+	string busId = busPrefix + info[1].ToString();
 
 	int fd_i2c;
 	char filename[20];
 
 //	fprintf(stdout, "initSensor\n");
-	fprintf(stdout, "%u\n", busId);
+	fprintf(stdout, "%s\n", busId);
 
 	// open i2c
 	snprintf(filename, 19, I2C_ADAPTER);
