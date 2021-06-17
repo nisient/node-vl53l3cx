@@ -26,13 +26,13 @@ Napi::String initSensor(const Napi::CallbackInfo& info) {
 	Napi::Env env = info.Env();
 
 	std::string deviceId = info[0].ToString();
-	std::string busId = "/dev/i2c-" + info[1].ToString();
+	std::string busId = (std::string)"/dev/i2c-" + info[1].ToString();
 
 	int fd_i2c;
 	char filename[20];
 
 //	fprintf(stdout, "initSensor\n");
-	fprintf(stdout, busId + "\n");
+	fprintf(stdout, "%u\n", busId);
 
 	// open i2c
 	snprintf(filename, 19, I2C_ADAPTER);
