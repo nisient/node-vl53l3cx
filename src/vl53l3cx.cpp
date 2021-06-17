@@ -59,7 +59,10 @@ Napi::Boolean initSensor(const Napi::CallbackInfo& info) {
 
 }
 
-Napi::Boolean readSensor(VL53LX sensor_vl53lx_sat) {
+//void readSensor(VL53LX sensor_vl53lx_sat) {
+Napi::Boolean readSensor(const Napi::CallbackInfo& info) {
+
+	Napi::Env env = info.Env();
 
 	int fd_i2c;
 	char filename[20];
