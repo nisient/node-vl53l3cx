@@ -22,7 +22,7 @@
 //#define I2C_DEVICE  0x52
 #define I2C_DEVICE  0x29
 
-Napi::Boolean initSensor(const Napi::CallbackInfo& info) {
+Napi::String initSensor(const Napi::CallbackInfo& info) {
 
 	Napi::Env env = info.Env();
 
@@ -58,7 +58,7 @@ Napi::Boolean initSensor(const Napi::CallbackInfo& info) {
 	close(fd_i2c);
 
 //	return sensor_vl53lx_sat;
-	return Napi::Boolean::New(env, true);
+	return Napi::String::New(env, deviceId);
 
 }
 
