@@ -132,5 +132,5 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 	return exports;
 }
 
-// register node-vl53l3cx module which calls Init method
-NODE_API_MODULE(node-vl53l3cx, Init)
+// register vl53l3cx module which calls Init method
+NODE_API_MODULE(vl53l3cx, Init)
