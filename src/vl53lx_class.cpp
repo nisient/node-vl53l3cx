@@ -47,7 +47,7 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 
-#include "./vl53lx_class.h"
+#include "vl53lx_class.h"
 
 // added by nisient to hard code the i2c slave address of the vl53l3cx
 #define I2C_DEVICE  0x29

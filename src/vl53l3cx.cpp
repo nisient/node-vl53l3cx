@@ -1,3 +1,5 @@
+#include <napi.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -14,13 +16,15 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 
-#include "./vl53lx_class.h"
+#include "vl53lx_class.h"
 
 #define I2C_ADAPTER "/dev/i2c-3"
 //#define I2C_DEVICE  0x52
 #define I2C_DEVICE  0x29
 
-VL53LX initSensor() {
+Napi::VL53LX initSensor(const Napi::CallbackInfo& info) {
+
+	Napi::Env env = info.Env();
 
 	int fd_i2c;
 	char filename[20];
@@ -50,10 +54,11 @@ VL53LX initSensor() {
 	// close i2c
 	close(fd_i2c);
 
-	return sensor_vl53lx_sat;
+//	return sensor_vl53lx_sat;
+	return Napi::String::New(env, true);
 
 }
-
+/*
 void readSensor(VL53LX sensor_vl53lx_sat) {
 
 	int fd_i2c;
@@ -111,12 +116,21 @@ void readSensor(VL53LX sensor_vl53lx_sat) {
 	
 	return;
 
-}
+}*/
 
-int main () {
+Napi::Object Init(Napi::Env env, Napi::Object exports) {
 
-	VL53LX sensor_vl53lx_sat = initSensor();
-	readSensor(sensor_vl53lx_sat);
+	exports.Set(
+		Napi::String::New(env, "initSensor"),
+		Napi::Function:New(env, initSensor)
+	);
+//	exports.Set(
+//		Napi::String::New(env, "readSensor"),
+//		Napi::Function:New(env, readSensor)
+//	);
 	
+	return exports;
 }
 
+// register node-vl53l3cx module which calls Init method
+NODE_API_MODULE(node-vl53l3cx, Init)

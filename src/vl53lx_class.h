@@ -39,7 +39,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "RangeSensor.h"
-#include "./vl53lx_def.h"
+#include "vl53lx_def.h"
 
 //#define VL53LX_DEFAULT_DEVICE_ADDRESS           0x52
 #define VL53LX_DEFAULT_DEVICE_ADDRESS           0x29
