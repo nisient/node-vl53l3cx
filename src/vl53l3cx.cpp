@@ -27,7 +27,7 @@ Napi::Boolean initSensor(const Napi::CallbackInfo& info) {
 	Napi::Env env = info.Env();
 
 	std::string deviceId = info[0].ToString();
-	std::string busId = info[1].toString();
+	std::string busId = info[1].ToString();
 
 	int fd_i2c;
 	char filename[20];
