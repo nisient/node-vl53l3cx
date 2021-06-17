@@ -1,6 +1,8 @@
 #include <napi.h>
 
-#include <string.h>
+#include <iostream>
+#include <iomanip>
+#include <string>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,8 +36,10 @@ Napi::String initSensor(const Napi::CallbackInfo& info) {
 	char filename[20];
 
 //	fprintf(stdout, "initSensor\n");
-	fprintf(stdout, "%s\n", busId);
+//	fprintf(stdout, "%s\n", busId);
 
+	std::cout << busId
+	
 	// open i2c
 	snprintf(filename, 19, I2C_ADAPTER);
 	fd_i2c = open(filename, O_RDWR);
