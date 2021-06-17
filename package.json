@@ -1,0 +1,26 @@
+{
+  "name": "node-vl53l3cx",
+  "version": "0.0.1",
+  "description": "native bindings to the VL53L3CX API provided by STMicroelectronics",
+  "main": "vl53l3cx.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://rgillan@github.com/nisient/node-vl53l3cx.git"
+  },
+  "keywords": [
+    "ToF",
+    "vl53l3cx"
+  ],
+  "author": "nisient pty. ltd.",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/nisient/node-vl53l3cx/issues"
+  },
+  "homepage": "https://github.com/nisient/node-vl53l3cx#readme",
+  "dependencies": {
+    "node-addon-api": "^4.0.0"
+  }
+}
