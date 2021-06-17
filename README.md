@@ -1,5 +1,5 @@
 # node-vl53l3cx
-nodejs module with native bindings to the VL53L3CX API provided by STMicro as part of the stm32duino project (https://github.com/stm32duino/VL53L3CX)
+nodejs module with native bindings to the VL53L3CX API provided by STMicroelectronics as part of the stm32duino project (https://github.com/stm32duino/VL53L3CX)
 
 The original API code is designed to work within the Arduino environment, and uses Wire.h as the interface to the i2c hardware.  To make this work under standard Linux environments, all i2c related code is replaced by standard ioctl methoods.  Some changes to the original constructor were also required to save the ioctl file descriptor rather than the Wire.h reference.
 
