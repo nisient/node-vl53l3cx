@@ -133,7 +133,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 	);
 	exports.Set(
 		Napi::String::New(env, "readSensor"),
-		Napi::Function:New(env, readSensor)
+		Napi::Function::New(env, readSensor)
 	);
 	
 	return exports;
