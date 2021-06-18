@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://rgillan@github.com/nisient/node-vl53l3cx.git"
+    "url": "git+https://github.com/nisient/node-vl53l3cx.git"
   },
   "keywords": [
     "ToF",
