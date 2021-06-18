@@ -3297,6 +3297,7 @@ VL53LX_Error VL53LX::VL53LX_init_and_start_range(
         &buffer[i2c_buffer_offset_bytes]);
   }
 
+// added by nisient to ensure the i2c slave address of the vl53l3cx is not overwritten
   if (device_config_level == VL53LX_DEVICECONFIGLEVEL_FULL) {
   	buffer[0] = I2C_DEVICE;
   }
@@ -27057,6 +27058,10 @@ VL53LX_Error VL53LX::VL53LX_GetUID(uint64_t *pUid)
 VL53LX_Error VL53LX::VL53LX_SetDeviceAddress(int DeviceAddress)
 {
   VL53LX_Error Status = VL53LX_ERROR_NONE;
+  
+  if (Dev->I2cDevAddr == 0) {
+    Dev->I2cDevAddr = DeviceAddress;
+  }
   
   Status = VL53LX_WrByte(Dev, VL53LX_I2C_SLAVE__DEVICE_ADDRESS,
                          I2C_DEVICE);

@@ -81,8 +81,8 @@ Napi::String initSensor(const Napi::CallbackInfo& info) {
 	int fd_i2c;
 	char filename[20];
 
-	fprintf(stdout, "initSensor\n");
-	std::cout << i2cDevice << "\n";
+//	fprintf(stdout, "initSensor\n");
+	std::cout << i2cDevice << std::endl;
 	
 	// open i2c
 	snprintf(filename, 19, i2c_adapter);
@@ -96,18 +96,17 @@ Napi::String initSensor(const Napi::CallbackInfo& info) {
 	}
 
 	// constructor
-	VL53LX sensor_vl53lx_sat(fd_i2c);
-	deviceMap[deviceId_ref] = &sensor_vl53lx_sat;
-	sensor_vl53lx_sat.begin();
+	deviceMap.insert(std::make_pair(deviceId_ref, new VL53LX()));
+	// added to since fd_i2c not passed to constructor now
+	deviceMap[deviceId_ref]->VL53LX_SetDeviceAddress(fd_i2c);
 	// added to prevent need to power cycle/hardware reset device
-	sensor_vl53lx_sat.VL53LX_software_reset();
-	sensor_vl53lx_sat.InitSensor(fd_i2c);
-	sensor_vl53lx_sat.VL53LX_StartMeasurement(); 
+	deviceMap[deviceId_ref]->VL53LX_software_reset();
+	deviceMap[deviceId_ref]->InitSensor(fd_i2c);
+	deviceMap[deviceId_ref]->VL53LX_StartMeasurement(); 
 
 	// close i2c
 	close(fd_i2c);
 
-//	return sensor_vl53lx_sat;
 	return Napi::String::New(env, deviceId);
 
 }
@@ -132,7 +131,7 @@ Napi::Boolean readSensor(const Napi::CallbackInfo& info) {
 	int no_of_object_found = 0, j;
 	int status = 0;
 
-	fprintf(stdout, "readSensor\n");
+//	fprintf(stdout, "readSensor\n");
 
 	// open i2c
 	snprintf(filename, 19, i2c_adapter);
@@ -144,11 +143,9 @@ Napi::Boolean readSensor(const Napi::CallbackInfo& info) {
 	if (ioctl(fd_i2c, I2C_SLAVE, I2C_DEVICE) < 0) {
 		exit(1);
 	}
-	fprintf(stdout, "readSensor 1\n");
 
 	// update i2c fd in constructor
 	deviceMap[deviceId_ref]->VL53LX_SetDeviceAddress(fd_i2c);
-	fprintf(stdout, "readSensor 2\n");
 	
     while (status == 0) {
 		do {

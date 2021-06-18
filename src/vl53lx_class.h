@@ -98,15 +98,12 @@
 class VL53LX : public RangeSensor {
   public:
     /** Constructor
-     * @param[in] i2c device I2C to be used for communication
      */
-    VL53LX(int i2c) : RangeSensor()
+    VL53LX() : RangeSensor()
     {
-
       Dev = &MyDevice;
       memset((void *)Dev, 0x0, sizeof(VL53LX_Dev_t));
-      MyDevice.I2cHandle = i2c;
-      MyDevice.I2cDevAddr = i2c;
+      MyDevice.I2cDevAddr = 0;
     }
 
 
