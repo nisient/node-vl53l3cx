@@ -67,13 +67,18 @@
 
 std::map<std::string, VL53LX*> deviceMap;
 
-Napi::String initSensor(const Napi::CallbackInfo& info) {
+/**
+ * initSensor
+ * This function initialises a sensor
+ */
+Napi::Boolean initSensor(const Napi::CallbackInfo& info) {
 
 	Napi::Env env = info.Env();
 
 	std::string deviceId = info[0].ToString();
 	char * deviceId_ref = new char[deviceId.length() + 1];
 	std::strcpy (deviceId_ref, deviceId.c_str());
+
 	std::string i2cDevice = info[1].ToString();
 	char * i2c_adapter = new char[i2cDevice.length() + 1];
 	std::strcpy (i2c_adapter, i2cDevice.c_str());
@@ -81,9 +86,6 @@ Napi::String initSensor(const Napi::CallbackInfo& info) {
 	int fd_i2c;
 	char filename[20];
 
-//	fprintf(stdout, "initSensor\n");
-	std::cout << i2cDevice << std::endl;
-	
 	// open i2c
 	snprintf(filename, 19, i2c_adapter);
 	fd_i2c = open(filename, O_RDWR);
@@ -97,7 +99,7 @@ Napi::String initSensor(const Napi::CallbackInfo& info) {
 
 	// constructor
 	deviceMap.insert(std::make_pair(deviceId_ref, new VL53LX()));
-	// added to since fd_i2c not passed to constructor now
+	// added since fd_i2c not passed to constructor now
 	deviceMap[deviceId_ref]->VL53LX_SetDeviceAddress(fd_i2c);
 	// added to prevent need to power cycle/hardware reset device
 	deviceMap[deviceId_ref]->VL53LX_software_reset();
@@ -107,31 +109,35 @@ Napi::String initSensor(const Napi::CallbackInfo& info) {
 	// close i2c
 	close(fd_i2c);
 
-	return Napi::String::New(env, deviceId);
+	return Napi::Boolean::New(env, true);
 
 }
 
-//void readSensor(VL53LX sensor_vl53lx_sat) {
-Napi::Boolean readSensor(const Napi::CallbackInfo& info) {
+/**
+ * readSensor
+ * This function performs a single read of the sensor
+ */
+Napi::Object readSensor(const Napi::CallbackInfo& info) {
 
 	Napi::Env env = info.Env();
 
 	std::string deviceId = info[0].ToString();
 	char * deviceId_ref = new char[deviceId.length() + 1];
 	std::strcpy (deviceId_ref, deviceId.c_str());
+
 	std::string i2cDevice = info[1].ToString();
 	char * i2c_adapter = new char[i2cDevice.length() + 1];
 	std::strcpy (i2c_adapter, i2cDevice.c_str());
 
 	int fd_i2c;
 	char filename[20];
+
 	VL53LX_MultiRangingData_t MultiRangingData;
 	VL53LX_MultiRangingData_t *pMultiRangingData = &MultiRangingData;
 	uint8_t NewDataReady = 0;
-	int no_of_object_found = 0, j;
+	int no_of_object_found = 0, i;
 	int status = 0;
-
-//	fprintf(stdout, "readSensor\n");
+	int wait_for_sample_counter = 0;
 
 	// open i2c
 	snprintf(filename, 19, i2c_adapter);
@@ -144,38 +150,45 @@ Napi::Boolean readSensor(const Napi::CallbackInfo& info) {
 		exit(1);
 	}
 
-	// update i2c fd in constructor
+	// update fd_i2c in case it has changed
 	deviceMap[deviceId_ref]->VL53LX_SetDeviceAddress(fd_i2c);
 	
-    while (status == 0) {
+    while (no_of_object_found == 0 && wait_for_sample_counter < 10) {
+    	wait_for_sample_counter++;
 		do {
 			status = deviceMap[deviceId_ref]->VL53LX_GetMeasurementDataReady(&NewDataReady);
-//			fprintf(stdout, "NewDataReady %x\n", NewDataReady);
 		} while (!NewDataReady);
 
-		if((!status)&&(NewDataReady!=0)) {
+		if ((!status)&&(NewDataReady!=0)) {
 			status = deviceMap[deviceId_ref]->VL53LX_GetMultiRangingData(pMultiRangingData);
-			no_of_object_found=pMultiRangingData->NumberOfObjectsFound;
-			fprintf(stdout, "Count=%u, #Objs=%u\n", pMultiRangingData->StreamCount, no_of_object_found);
-			for(j=0;j<no_of_object_found;j++)
-			{
-				fprintf(stdout, "status=");
-				fprintf(stdout, "%u", pMultiRangingData->RangeData[j].RangeStatus);
-				fprintf(stdout, ", D=");
-				fprintf(stdout, "%u", pMultiRangingData->RangeData[j].RangeMilliMeter);
-				fprintf(stdout, "mm\n");
-			}
-			if (status==0) {
+			no_of_object_found = pMultiRangingData->NumberOfObjectsFound;
+			if (status == 0) {
 				status = deviceMap[deviceId_ref]->VL53LX_ClearInterruptAndStartMeasurement();
 			}
 		}
-	} // end while loop
-	
-//	return;
-	return Napi::Boolean::New(env, true);
+	}
+
+	Napi::Array rangeData = Napi::Array::New(env, no_of_object_found);
+	Napi::Object rangeDataEntry = Napi::Object::New(env);
+	for (i = 0; i < no_of_object_found; i++) {
+		rangeDataEntry.Set("status", pMultiRangingData->RangeData[i].RangeStatus);
+		rangeDataEntry.Set("mm", pMultiRangingData->RangeData[i].RangeMilliMeter);
+		rangeData[i] = rangeDataEntry;
+	}
+
+	Napi::Object rangingData = Napi::Object::New(env);
+	rangingData.Set("streamCount", pMultiRangingData->StreamCount);
+	rangingData.Set("numberOfObjectsFound", pMultiRangingData->NumberOfObjectsFound);
+	rangingData.Set("rangeData", rangeData);
+
+	return rangingData;
 
 }
 
+/**
+ * Init
+ * This is the module initialisation
+ */
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
 
 	exports.Set(
@@ -190,5 +203,4 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 	return exports;
 }
 
-// register vl53l3cx module which calls Init method
 NODE_API_MODULE(vl53l3cx, Init)

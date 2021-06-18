@@ -70,7 +70,7 @@ void readSensor() {
 	VL53LX_MultiRangingData_t MultiRangingData;
 	VL53LX_MultiRangingData_t *pMultiRangingData = &MultiRangingData;
 	uint8_t NewDataReady = 0;
-	int no_of_object_found = 0, j;
+	int no_of_object_found = 0, i;
 	int status = 0;
 
 	fprintf(stdout, "readSensor\n");
@@ -94,16 +94,16 @@ void readSensor() {
 			status = deviceMap[deviceId_ref]->VL53LX_GetMeasurementDataReady(&NewDataReady);
 		} while (!NewDataReady);
 
-		if((!status)&&(NewDataReady!=0)) {
+		if ((!status) && (NewDataReady! = 0)) {
 			status = deviceMap[deviceId_ref]->VL53LX_GetMultiRangingData(pMultiRangingData);
 			no_of_object_found=pMultiRangingData->NumberOfObjectsFound;
 			fprintf(stdout, "Count=%u, #Objs=%u\n", pMultiRangingData->StreamCount, no_of_object_found);
-			for(j=0;j<no_of_object_found;j++)
+			for (i = 0; i < no_of_object_found; i++)
 			{
 				fprintf(stdout, "status=");
-				fprintf(stdout, "%u", pMultiRangingData->RangeData[j].RangeStatus);
+				fprintf(stdout, "%u", pMultiRangingData->RangeData[i].RangeStatus);
 				fprintf(stdout, ", D=");
-				fprintf(stdout, "%u", pMultiRangingData->RangeData[j].RangeMilliMeter);
+				fprintf(stdout, "%u", pMultiRangingData->RangeData[i].RangeMilliMeter);
 				fprintf(stdout, "mm\n");
 			}
 			if (status==0) {
