@@ -197,7 +197,7 @@ VL53LX_Error VL53LX::VL53LX_I2CRead(int DeviceAddr, uint16_t RegisterAddr, uint8
     fprintf(stderr, "register write failed address\n");
   } else {
     if (read(DeviceAddr, buffer, NumByteToRead) != NumByteToRead) {
-      fprintf(stderr, "read failed");
+      fprintf(stderr, "read failed\n");
     } else {
 //      fprintf(stdout, "VL53LX_I2CRead - ");
       for (uint16_t i = 0 ; i < NumByteToRead ; i++) {
