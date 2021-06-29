@@ -38,6 +38,7 @@
 /* Includes */
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -173,7 +174,7 @@ VL53LX_Error VL53LX::VL53LX_I2CWrite(int DeviceAddr, uint16_t RegisterAddr, uint
   }
   
   if (write(DeviceAddr, buffer, 2 + NumByteToWrite) != 2 + NumByteToWrite) {
-    fprintf(stderr, "register write failed address\n");
+    fprintf(stderr, "i2cwrite register write failed address\n");
 /*  } else {
     fprintf(stdout, "VL53LX_I2CWrite ");
     for (i = 0 ; i < 2 + NumByteToWrite ; i++) {
@@ -194,7 +195,7 @@ VL53LX_Error VL53LX::VL53LX_I2CRead(int DeviceAddr, uint16_t RegisterAddr, uint8
   buffer[1] = (uint8_t)(RegisterAddr & 0xff);
 //  fprintf(stdout, "VL53LX_I2CRead %x %x %u\n", DeviceAddr, RegisterAddr, NumByteToRead);
   if (write(DeviceAddr, buffer, 2) != 2) {
-    fprintf(stderr, "register write failed address\n");
+    fprintf(stderr, "i2cread register write failed address\n");
   } else {
     if (read(DeviceAddr, buffer, NumByteToRead) != NumByteToRead) {
       fprintf(stderr, "read failed\n");
