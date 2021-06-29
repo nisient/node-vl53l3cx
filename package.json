@@ -1,6 +1,6 @@
 {
   "name": "node-vl53l3cx",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "native bindings to the VL53L3CX API provided by STMicroelectronics",
   "main": "vl53l3cx.js",
   "scripts": {
