@@ -1,9 +1,9 @@
 /**
- * This is the node.js module interface for the STMicro VL53L3CX ToF sensor.
+ * This is the async worker c++ node.js module header file for the STMicro VL53L3CX ToF sensor.
  *
- * @module vl53l3cx.js
+ * @module src/vl53l3cxWorker.h
  * @version 0.2.0
- * @file vl53l3cx.js
+ * @file vl53l3cxWorker.h
  * @copyright nisient pty. ltd. 2021
  * @license
  * BSD 3-Clause License
@@ -37,7 +37,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const addonVL53L3CX = require('bindings')('node-vl53l3cx');
+#pragma once
 
-exports.initSensor = addonVL53L3CX.initSensor;
-exports.readSensor = addonVL53L3CX.readSensor;
+#include <napi.h>
+
+using namespace Napi;
+
+class vl53l3cxInit : public AsyncWorker {
+
+	public:
+		vl53l3cxInit (Function& callback, std::string deviceId, std::string i2cDevice);
+		virtual ~vl53l3cxInit() {};
+
+		void Execute();
+		void OnOK();
+
+	private: 
+		std::string deviceId;
+		std::string i2cDevice;
+
+};
+
+class vl53l3cxRead : public AsyncWorker {
+
+	public:
+		vl53l3cxRead (Function& callback, std::string deviceId, std::string i2cDevice);
+		virtual ~vl53l3cxRead() {};
+
+		void Execute();
+		void OnOK();
+
+	private: 
+		std::string deviceId;
+		std::string i2cDevice;
+		std::string result;
+
+};

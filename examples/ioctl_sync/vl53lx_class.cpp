@@ -38,6 +38,7 @@
 /* Includes */
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -46,13 +47,6 @@
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
-
-#include <stdio.h>
-#include <strings.h>
-#include <sys/types.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 
 #include "vl53lx_class.h"
 
@@ -170,65 +164,25 @@ VL53LX_Error VL53LX::VL53LX_UpdateByte(VL53LX_DEV Dev, uint16_t index, uint8_t A
  */
 VL53LX_Error VL53LX::VL53LX_I2CWrite(int DeviceAddr, uint16_t RegisterAddr, uint8_t *pBuffer, uint16_t NumByteToWrite)
 {
-	uint16_t i;
-	fprintf(stdout, "VL53LX_I2CWrite dev:%u reg:%u num:%u\n", DeviceAddr, RegisterAddr, NumByteToWrite);
-
-/*	int sockfd;
-	struct sockaddr_in serv_addr;
-
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    serv_addr.sin_port = htons(1600);
-    
-    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-       
-    if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0){
-        printf("\nConnection Failed \n");
-        return -1;
-    }*/
-
-
+  uint16_t i;
+//  fprintf(stdout, "VL53LX_I2CWrite %x %x %u\n", DeviceAddr, RegisterAddr, NumByteToWrite);
   uint8_t buffer[2 + NumByteToWrite];
   buffer[0] = (uint8_t)(RegisterAddr >> 8);
   buffer[1] = (uint8_t)(RegisterAddr & 0xff);
   for (i = 0 ; i < NumByteToWrite ; i++) {
     buffer[i + 2] = pBuffer[i];
   }
-
-/*	uint8_t sendBuffer[4 + NumByteToWrite];
-	sendBuffer[0] = 119;
-	sendBuffer[1] = (uint8_t)(RegisterAddr >> 8);
-	sendBuffer[2] = (uint8_t)(RegisterAddr & 0xff);
-	sendBuffer[3] = (uint8_t)(NumByteToWrite);
-	for (i = 0 ; i < NumByteToWrite ; i++) {
-		sendBuffer[i + 4] = pBuffer[i];
-	}
-
-	uint8_t rcvBuffer[1];
-
-    sendto(sockfd , sendBuffer, NumByteToWrite + 4, 0, (struct sockaddr*)NULL, sizeof(serv_addr));
-    fprintf(stdout, "%u sent\n", NumByteToWrite + 4);
-
-	recvfrom(sockfd, rcvBuffer, 1, 0, (struct sockaddr*)NULL, NULL);
-//    for (i = 0 ; i < sizeof(rcvBuffer) ; i++) {
-//    for (i = 0 ; i < 4 ; i++) {
-		fprintf(stdout, "%u received\n", rcvBuffer[0]);
-//	}*/
-
+  
   if (write(DeviceAddr, buffer, 2 + NumByteToWrite) != 2 + NumByteToWrite) {
-    fprintf(stderr, "register write failed address\n");
-  } else {
-    fprintf(stdout, "VL53LX_I2CWrite ");
+    fprintf(stderr, "i2cwrite register write failed address\n");
+/*  } else {
+    fprintf(stdout, "VL53LX_I2CWrite - ");
     for (i = 0 ; i < 2 + NumByteToWrite ; i++) {
-      fprintf(stdout, "%u ", buffer[i]);
+      fprintf(stdout, "%x ", buffer[i]);
     }
-    fprintf(stdout, "\n");
+    fprintf(stdout, "\n");*/
   }
-
-
-	close(sockfd);
-
-	return 0;
+  return 0;
 }
 
 /*
@@ -239,54 +193,19 @@ VL53LX_Error VL53LX::VL53LX_I2CRead(int DeviceAddr, uint16_t RegisterAddr, uint8
   uint8_t buffer[2 + NumByteToRead];
   buffer[0] = (uint8_t)(RegisterAddr >> 8);
   buffer[1] = (uint8_t)(RegisterAddr & 0xff);
-  fprintf(stdout, "VL53LX_I2CRead %x %x %u\n", DeviceAddr, RegisterAddr, NumByteToRead);
-
-/*	uint16_t i;
-	int sockfd;
-	struct sockaddr_in serv_addr;
-
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    serv_addr.sin_port = htons(1600);
-    
-    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-       
-    if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0){
-        printf("\nConnection Failed \n");
-        return -1;
-    }
-
-
-	uint8_t sendBuffer[4];
-	sendBuffer[0] = 114;
-	sendBuffer[1] = (uint8_t)(RegisterAddr >> 8);
-	sendBuffer[2] = (uint8_t)(RegisterAddr & 0xff);
-	sendBuffer[3] = (uint8_t)(NumByteToRead);
-
-    sendto(sockfd , sendBuffer, 4, 0, (struct sockaddr*)NULL, sizeof(serv_addr));
-    fprintf(stdout, "%u sent\n", 4);
-
-	uint8_t rcvBuffer[NumByteToRead];
-
-	recvfrom(sockfd, rcvBuffer, NumByteToRead, 0, (struct sockaddr*)NULL, NULL);
-	fprintf(stdout, "received ");
-    for (i = 0 ; i < NumByteToRead ; i++) {
-		fprintf(stdout, "%u ", rcvBuffer[i]);
-	}
-	fprintf(stdout, "\n");*/
-
+//  fprintf(stdout, "VL53LX_I2CRead %x %x %u\n", DeviceAddr, RegisterAddr, NumByteToRead);
   if (write(DeviceAddr, buffer, 2) != 2) {
-    fprintf(stderr, "register write failed address\n");
+    fprintf(stderr, "i2cread register write failed address\n");
   } else {
     if (read(DeviceAddr, buffer, NumByteToRead) != NumByteToRead) {
       fprintf(stderr, "read failed\n");
     } else {
-      fprintf(stdout, "VL53LX_I2CRead - ");
+//      fprintf(stdout, "VL53LX_I2CRead - ");
       for (uint16_t i = 0 ; i < NumByteToRead ; i++) {
         pBuffer[i] = buffer[i];
-        fprintf(stdout, "%x ", pBuffer[i]);
+//        fprintf(stdout, "%x ", pBuffer[i]);
       }
-      fprintf(stdout, "\n");
+//      fprintf(stdout, "\n");
     }
   }
 

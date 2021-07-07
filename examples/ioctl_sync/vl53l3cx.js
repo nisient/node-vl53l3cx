@@ -2,7 +2,7 @@
  * This is the node.js module interface for the STMicro VL53L3CX ToF sensor.
  *
  * @module vl53l3cx.js
- * @version 0.2.0
+ * @version 0.0.1
  * @file vl53l3cx.js
  * @copyright nisient pty. ltd. 2021
  * @license
