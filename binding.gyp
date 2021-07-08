@@ -6,6 +6,7 @@
       "cflags_cc!": [ "-fno-exceptions" ],
       "sources": [
         "./src/vl53l3cx.cpp",
+        "./src/vl53l3cxWorker.cpp",
         "./src/vl53lx_class.cpp"
       ],
       "include_dirs": [
