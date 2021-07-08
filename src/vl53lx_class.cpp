@@ -226,7 +226,7 @@ VL53LX_Error VL53LX::VL53LX_I2CWrite(int DeviceAddr, uint16_t RegisterAddr, uint
   }
 
 
-	close(sockfd);
+//	close(sockfd);
 
 	return 0;
 }
